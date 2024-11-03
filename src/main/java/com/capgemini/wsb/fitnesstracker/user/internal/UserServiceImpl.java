@@ -5,8 +5,12 @@ import com.capgemini.wsb.fitnesstracker.user.api.UserProvider;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,4 +45,29 @@ class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findAll();
     }
 
+    @Override
+    public void removeUser(final Long userId) throws ResponseStatusException {
+        if (!userRepository.existsById(userId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        userRepository.deleteById(userId);
+        log.info("User with ID {} has been removed", userId);
+    }
+
+    public List<User> findUsersByEmailFragment(String emailFragment) {
+        List<User> users = userRepository.findByEmailContainingIgnoreCase(emailFragment);
+        if (users.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No users found matching email fragment");
+        }
+        return users;
+    }
+
+    public List<User> getOlderUsers(int age){
+        return userRepository.findAll()
+                .stream()
+                .filter(user -> {
+                    int userAge = Period.between(user.getBirthdate(), LocalDate.now()).getYears();
+                    return userAge > age;
+                }).toList();
+    }
 }
