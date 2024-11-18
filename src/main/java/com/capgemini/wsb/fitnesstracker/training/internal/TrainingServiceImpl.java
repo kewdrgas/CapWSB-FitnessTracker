@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,5 +44,10 @@ public class TrainingServiceImpl implements TrainingProvider {
             log.warn("No trainings found for user ID: {}", userId);
         }
         return trainings;
+    }
+
+    @Override
+    public List<Training> findTrainingsFinishedAfter(Date afterTime){
+        return trainingRepository.findByEndTimeAfter(afterTime);
     }
 }
