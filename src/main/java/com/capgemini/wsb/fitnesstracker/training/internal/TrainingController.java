@@ -1,7 +1,10 @@
 package com.capgemini.wsb.fitnesstracker.training.internal;
 
+import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +26,20 @@ public class TrainingController {
     public List<TrainingDto> getAllTrainings() {
         return trainingService.findAllTrainings()
                 .stream()
-                .map(trainingMapper::toDto) // Mapping Training to TrainingDto
+                .map(trainingMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/find-by-user/{userId}")
+    public List<TrainingDto> findTrainingByUserId(@PathVariable int userId) {
+        List<Training> trainings = trainingService.findByUserId(userId);
+
+        if (trainings.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No trainings found for user ID: " + userId);
+        }
+
+        return trainings.stream()
+                .map(trainingMapper::toDto)
                 .collect(Collectors.toList());
     }
 }

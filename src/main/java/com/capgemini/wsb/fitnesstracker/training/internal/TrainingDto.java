@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
-@RequiredArgsConstructor
+
 public record TrainingDto(
         Long id,
         UserDto user,  // user is of type UserDto

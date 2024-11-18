@@ -23,4 +23,10 @@ public interface TrainingProvider {
      */
     List<Training> findAllTrainings();
 
+    /**
+     * Retreives trainings with particular user id.
+     * @param userId
+     * @return a list of {@link Training} that have particular user
+     */
+    List<Training> findByUserId(int userId);
 }

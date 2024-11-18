@@ -36,4 +36,12 @@ public class TrainingServiceImpl implements TrainingProvider {
     public List<Training> findAllTrainings() {
         return trainingRepository.findAll();
     }
+    @Override
+    public List<Training> findByUserId(int userId) {
+        List<Training> trainings = trainingRepository.findByUser_Id(userId);
+        if (trainings.isEmpty()) {
+            log.warn("No trainings found for user ID: {}", userId);
+        }
+        return trainings;
+    }
 }
